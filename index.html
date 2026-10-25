@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f5ee">
+  <meta name="description" content="Temu Kata — temukan cerita yang tepat untukmu.">
+  <title>Temu Kata — Temukan Ceritamu</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Navigasi utama">
+      <a class="brand" href="index.html" aria-label="Temu Kata beranda">
+        <span class="brand-mark">tk</span>
+        <span>Temu Kata</span>
+      </a>
+
+      <button
+        class="mobile-menu-button"
+        id="mobile-menu-button"
+        type="button"
+        aria-label="Buka navigasi"
+        aria-expanded="false"
+      >☰</button>
+
+      <div class="nav-links" id="nav-links">
+        <a href="#beranda">Beranda</a>
+        <a href="#genre">Genre</a>
+        <a href="#koleksi">Kumpulan Novel</a>
+        <a href="#tentang">Tentang</a>
+      </div>
+
+      <div class="nav-actions">
+        <button
+          class="icon-button"
+          id="open-history"
+          type="button"
+          aria-label="Riwayat pesanan"
+          title="Riwayat pesanan"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"/>
+            <path d="M3 3v5h5M12 7v5l3 2"/>
+          </svg>
+        </button>
+
+        <button
+          class="icon-button cart-icon-button"
+          id="open-cart"
+          type="button"
+          aria-label="Keranjang belanja"
+          title="Keranjang"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 8H6"/>
+            <circle cx="10" cy="20" r="1"/>
+            <circle cx="18" cy="20" r="1"/>
+          </svg>
+          <span class="cart-badge" id="cart-badge">0</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HALAMAN UTAMA -->
+  <main id="home-view">
+
+    <!-- HERO -->
+    <section class="hero-section" id="beranda">
+      <div class="container hero-grid">
+
+        <div class="hero-copy">
+          <p class="eyebrow">RUANG KECIL UNTUK CERITA BESAR</p>
+
+          <h1>
+            Temukan cerita,<br>
+            <em>temukan dirimu.</em>
+          </h1>
+
+          <p class="hero-description">
+            Setiap buku menyimpan dunia. Temukan kisah yang menemanimu
+            tumbuh, merasa, dan melihat hidup dari sudut pandang yang baru.
+          </p>
+
+          <div class="hero-actions">
+            <a class="button button-primary" href="#genre">
+              Jelajahi Genre <span aria-hidden="true">↗</span>
+            </a>
+
+          </div>
+
+          <div class="hero-note">
+            <span class="hero-note-line"></span>
+            <span>Tempat cerita menemukan pembacanya.</span>
+          </div>
+        </div>
+
+        <!-- ILUSTRASI TIGA BUKU -->
+        <div class="hero-art" aria-label="Ilustrasi tumpukan buku">
+          <div class="hero-sun"></div>
+          <div class="hero-plant plant-one">✦</div>
+
+          <div class="hero-book hero-book-back">
+            <span>THE ART<br>OF STORIES</span>
+          </div>
+
+          <div class="hero-book hero-book-middle">
+            <span>sebuah<br>perjalanan</span>
+          </div>
+
+          <div class="hero-book hero-book-front">
+            <span>temu<br>kata</span>
+            <small>RUANG BACA</small>
+          </div>
+
+          <div class="hero-spark spark-one">✳</div>
+          <div class="hero-spark spark-two">✧</div>
+          <div class="hero-ground"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PILIHAN GENRE -->
+    <section class="genre-section section-pad" id="genre">
+      <div class="container">
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PILIH DUNIAMU</p>
+            <h2>Cerita punya banyak <em>warna.</em></h2>
+          </div>
+
+          <p class="section-intro">
+            Pilih genre yang paling dekat dengan suasana hatimu hari ini.
+          </p>
+        </div>
+
+        <div class="category-list" id="category-list">
+
+          <a class="category-card" href="index.html?genre=Romance">
+            <img src="images/romance.jpeg" alt="Novel genre Romance">
+            <span class="category-overlay"></span>
+            <span class="category-number">01</span>
+            <span class="category-name">Romance</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+          <a class="category-card" href="index.html?genre=Fantasy">
+            <img src="images/fantasy.jpeg" alt="Novel genre Fantasy">
+            <span class="category-overlay"></span>
+            <span class="category-number">02</span>
+            <span class="category-name">Fantasy</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+          <a class="category-card" href="index.html?genre=Mystery">
+            <img src="images/mystery.jpeg" alt="Novel genre Mystery">
+            <span class="category-overlay"></span>
+            <span class="category-number">03</span>
+            <span class="category-name">Mystery</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+          <a class="category-card" href="index.html?genre=Thriller">
+            <img src="images/thriller.jpeg" alt="Novel genre Thriller">
+            <span class="category-overlay"></span>
+            <span class="category-number">04</span>
+            <span class="category-name">Thriller</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+          <a class="category-card" href="index.html?genre=Science Fiction">
+            <img src="images/science-fiction.jpeg" alt="Novel genre Science Fiction">
+            <span class="category-overlay"></span>
+            <span class="category-number">05</span>
+            <span class="category-name">Science Fiction</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+          <a class="category-card" href="index.html?genre=Horror">
+            <img src="images/horror.jpeg" alt="Novel genre Horror">
+            <span class="category-overlay"></span>
+            <span class="category-number">06</span>
+            <span class="category-name">Horror</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+          <a class="category-card" href="index.html?genre=Comedy">
+            <img src="images/comedy.jpeg" alt="Novel genre Comedy">
+            <span class="category-overlay"></span>
+            <span class="category-number">07</span>
+            <span class="category-name">Comedy</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+          <a class="category-card" href="index.html?genre=Adventure">
+            <img src="images/adventure.jpeg" alt="Novel genre Adventure">
+            <span class="category-overlay"></span>
+            <span class="category-number">08</span>
+            <span class="category-name">Adventure</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+          <a class="category-card" href="index.html?genre=Memoir">
+            <img src="images/memoir.jpeg" alt="Novel genre Memoir">
+            <span class="category-overlay"></span>
+            <span class="category-number">09</span>
+            <span class="category-name">Memoir</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+          <a class="category-card" href="index.html?genre=Historical Fiction">
+            <img src="images/historical-fiction.jpeg" alt="Novel genre Historical Fiction">
+            <span class="category-overlay"></span>
+            <span class="category-number">10</span>
+            <span class="category-name">Historical Fiction</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+          <a class="category-card" href="index.html?genre=Teen Fiction">
+            <img src="images/teen-fiction.jpeg" alt="Novel genre Teen Fiction">
+            <span class="category-overlay"></span>
+            <span class="category-number">11</span>
+            <span class="category-name">Teen Fiction</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+          <a class="category-card" href="index.html?genre=Inspirational">
+            <img src="images/inspirative.jpeg" alt="Novel genre Inspiratif">
+            <span class="category-overlay"></span>
+            <span class="category-number">12</span>
+            <span class="category-name">Inspiratif</span>
+            <span class="category-arrow">↗</span>
+          </a>
+
+
+        </div>
+      </div>
+    </section>
+
+    <!-- KUMPULAN NOVEL -->
+    <section class="collection-section section-pad" id="koleksi">
+      <div class="container">
+
+        <div class="section-heading collection-heading">
+          <div>
+            <p class="eyebrow">KURASI TEMU KATA</p>
+            <h2>Kumpulan <em>novel.</em></h2>
+            <p class="section-intro">
+              Temukan bacaan berikutnya yang akan tinggal di ingatanmu.
+            </p>
+          </div>
+
+          <div class="collection-count">
+            <strong id="result-count">12</strong>
+            <span>cerita menunggu</span>
+          </div>
+        </div>
+
+        <!-- FILTER GENRE DIPINDAHKAN KE ATAS PENCARIAN -->
+        <div class="genre-filters">
+            <button class="genre-pill active" data-filter="Semua" type="button">
+                Semua
+            </button>
+
+            <button class="genre-pill" data-filter="Romance" type="button">
+                Romance
+            </button>
+
+            <button class="genre-pill" data-filter="Fantasy" type="button">
+                Fantasy
+            </button>
+
+            <button class="genre-pill" data-filter="Mystery" type="button">
+                Mystery
+            </button>
+
+            <button class="genre-pill" data-filter="Thriller" type="button">
+                Thriller
+            </button>
+
+            <button class="genre-pill" data-filter="Science Fiction" type="button">
+                Science Fiction
+            </button>
+
+            <button class="genre-pill" data-filter="Horror" type="button">
+                Horror
+            </button>
+
+            <button class="genre-pill" data-filter="Comedy" type="button">
+                Comedy
+            </button>
+
+            <button class="genre-pill" data-filter="Adventure" type="button">
+                Adventure
+            </button>
+
+            <button class="genre-pill" data-filter="Memoir" type="button">
+                Memoir
+            </button>
+
+            <button class="genre-pill" data-filter="Historical Fiction" type="button">
+                Historical Fiction
+            </button>
+
+            <button class="genre-pill" data-filter="Teen Fiction" type="button">
+                Teen Fiction
+            </button>
+
+            <button class="genre-pill" data-filter="Inspirational" type="button">
+                Inspiratif
+            </button>
+
+        </div>
+
+        <!-- PENCARIAN DAN PENGURUTAN -->
+        <div class="collection-toolbar">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="10.8" cy="10.8" r="6.8"/>
+              <path d="m16 16 5 5"/>
+            </svg>
+
+            <input
+              id="search-input"
+              type="search"
+              placeholder="Cari judul atau penulis..."
+              autocomplete="off"
+              aria-label="Cari judul atau penulis"
+            >
+
+            <button
+              id="clear-search"
+              type="button"
+              aria-label="Hapus pencarian"
+              hidden
+            >×</button>
+
+            <button
+              id="search-button"
+              class="search-submit"
+              type="button"
+              aria-label="Cari"
+            >Cari</button>
+          </div>
+
+          <label class="sort-control">
+            <span>Urutkan berdasarkan:</span>
+            <select id="sort-select">
+              <option value="featured">Pilihan Temu Kata</option>
+              <option value="title-asc">Judul A–Z</option>
+              <option value="title-desc">Judul Z–A</option>
+              <option value="price-asc">Harga termurah</option>
+              <option value="price-desc">Harga termahal</option>
+              <option value="stock-desc">Stok terbanyak</option>
+              <option value="stock-asc">Stok paling sedikit</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- DAFTAR NOVEL -->
+        <div class="product-grid" id="product-grid"></div>
+
+        <div class="empty-state" id="empty-state" hidden>
+          <span class="empty-icon">⌕</span>
+          <h3>Belum ada cerita yang cocok.</h3>
+          <p>Coba judul atau nama penulis yang berbeda.</p>
+
+          <button class="button button-primary" id="reset-filters" type="button">
+            Tampilkan Semua Novel
+          </button>
+        </div>
+
+        <!-- LOG AKTIVITAS -->
+        <section class="activity-panel" aria-labelledby="activity-title">
+          <div class="activity-heading">
+            <div>
+              <p class="eyebrow">PROSES PENCARIAN</p>
+              <h3 id="activity-title">Log aktivitas</h3>
+            </div>
+
+            <div class="activity-actions">
+              <span id="activity-count">0 aktivitas</span>
+              <button class="text-button" id="clear-activity" type="button">
+                Hapus log
+              </button>
+            </div>
+          </div>
+
+          <div class="activity-list" id="activity-list">
+            <p class="activity-empty">
+              Aktivitas pencarian dan pengurutan akan tampil di sini.
+            </p>
+          </div>
+        </section>
+
+      </div>
+    </section>
+
+    <!-- TENTANG TEMU KATA -->
+    <section class="about-section section-pad" id="tentang">
+      <div class="container about-grid">
+
+        <div class="about-art">
+          <div class="about-circle"></div>
+
+          <div class="about-paper">
+            <span class="paper-kicker">CATATAN KECIL</span>
+            <span class="paper-quote">
+              “Ada dunia<br>di setiap<br>halaman.”
+            </span>
+            <span class="paper-line"></span>
+            <span class="paper-signature">Temu Kata</span>
+          </div>
+
+          <span class="about-star">✳</span>
+        </div>
+
+        <div class="about-copy">
+          <p class="eyebrow">TENTANG TEMU KATA</p>
+
+          <h2>
+            Bukan sekadar buku,<br>
+            melainkan <em>pertemuan.</em>
+          </h2>
+
+          <p>
+            Temu Kata hadir sebagai ruang untuk menemukan cerita yang terasa
+            dekat. Kami percaya setiap pembaca punya perjalanan sendiri,
+            dan sebuah buku bisa menjadi teman di sepanjang perjalanan itu.
+          </p>
+
+          <p>
+            Dari kisah cinta yang hangat sampai misteri yang membuat penasaran,
+            semoga selalu ada cerita yang tepat untuk kamu temukan.
+          </p>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PENUTUP -->
+    <section class="closing-section">
+      <div class="container closing-inner">
+        <p class="eyebrow">CERITA BERIKUTNYA MENUNGGU</p>
+
+        <h2>
+          Barangkali, kisah favoritmu<br>
+          ada <em>di sini.</em>
+        </h2>
+
+        <a class="button button-sage" href="#koleksi">
+          Jelajahi Koleksi <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- HALAMAN KHUSUS GENRE -->
+  <main id="genre-view" class="genre-view" hidden>
+    <section class="genre-page-hero">
+      <div class="container">
+        <a class="back-link" href="index.html#genre">← Kembali ke genre</a>
+
+        <p class="eyebrow">KUMPULAN NOVEL</p>
+        <h1 id="genre-page-title">Genre</h1>
+
+        <p id="genre-page-description">
+          Kumpulan novel berdasarkan genre yang kamu pilih.
+        </p>
+      </div>
+    </section>
+
+    <section class="section-pad genre-books-section">
+      <div class="container">
+
+        <div class="genre-page-toolbar">
+          <span id="genre-page-count">0 novel</span>
+
+          <label class="sort-control">
+            <span>Urutkan berdasarkan:</span>
+
+            <select id="genre-sort-select">
+              <option value="featured">Pilihan Temu Kata</option>
+              <option value="title-asc">Judul A–Z</option>
+              <option value="title-desc">Judul Z–A</option>
+              <option value="price-asc">Harga termurah</option>
+              <option value="price-desc">Harga termahal</option>
+              <option value="stock-desc">Stok terbanyak</option>
+              <option value="stock-asc">Stok paling sedikit</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="product-grid genre-product-grid" id="genre-product-grid"></div>
+
+        <div class="empty-state" id="genre-empty-state" hidden>
+          <span class="empty-icon">✧</span>
+          <h3>Novel belum tersedia.</h3>
+          <p>Belum ada novel untuk genre ini. Silakan pilih genre lain.</p>
+
+          <a class="button button-sage" href="index.html#genre">
+            Kembali ke Genre
+          </a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER: TIDAK ADA TOMBOL KENALI TEMU KATA -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <a class="brand footer-brand" href="index.html">
+        <span class="brand-mark">tk</span>
+        <span>Temu Kata</span>
+      </a>
+
+      <p>Temukan cerita, temukan dirimu.</p>
+
+      <span>© <span id="current-year"></span> Temu Kata</span>
+    </div>
+  </footer>
+
+  <!-- DRAWER KERANJANG -->
+  <div class="drawer-overlay" id="cart-overlay" hidden></div>
+
+  <aside
+    class="side-drawer cart-drawer"
+    id="cart-drawer"
+    aria-labelledby="cart-title"
+    aria-modal="true"
+    role="dialog"
+    hidden
+  >
+    <div class="drawer-header">
+      <div>
+        <p class="eyebrow">SIMPAN CERITAMU</p>
+        <h2 id="cart-title">Keranjang</h2>
+      </div>
+
+      <button
+        class="drawer-close"
+        id="close-cart"
+        type="button"
+        aria-label="Tutup keranjang"
+      >×</button>
+    </div>
+
+    <div class="drawer-content">
+      <div id="cart-items" class="cart-items"></div>
+
+      <div class="cart-empty" id="cart-empty">
+        <span class="empty-icon">♡</span>
+        <h3>Keranjangmu masih kosong.</h3>
+        <p>Novel yang menarik perhatianmu bisa disimpan di sini.</p>
+
+        <button class="button button-sage" id="browse-from-cart" type="button">
+          Jelajahi Koleksi
+        </button>
+      </div>
+
+      <div class="cart-summary" id="cart-summary" hidden>
+
+        <div class="shipping-choice">
+          <label for="shipping-region">Wilayah pengiriman</label>
+
+          <select id="shipping-region">
+            <option value="jawa">Jawa — Rp15.000</option>
+            <option value="luar-jawa">Luar Jawa — Rp25.000</option>
+          </select>
+        </div>
+
+        <div class="coupon-box">
+          <label for="coupon-input">Kode kupon</label>
+
+          <div class="coupon-row">
+            <input
+              id="coupon-input"
+              type="text"
+              placeholder="Masukkan kode kupon"
+            >
+
+            <button id="apply-coupon" type="button">Pakai</button>
+          </div>
+
+          <p id="coupon-message" class="form-message" aria-live="polite"></p>
+        </div>
+
+        <div class="summary-line">
+          <span>Subtotal</span>
+          <strong id="cart-subtotal">Rp0</strong>
+        </div>
+
+        <div class="summary-line">
+          <span>Ongkos kirim</span>
+          <strong id="cart-shipping">Rp0</strong>
+        </div>
+
+        <div class="summary-line discount-line">
+          <span>Diskon</span>
+          <strong id="cart-discount">−Rp0</strong>
+        </div>
+
+        <div class="summary-line total-line">
+          <span>Total</span>
+          <strong id="cart-total">Rp0</strong>
+        </div>
+
+        <button
+          class="button button-primary checkout-start"
+          id="checkout-start"
+          type="button"
+        >
+          Lanjut ke Pembayaran <span>→</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- FORM CHECKOUT -->
+    <form id="checkout-form" class="checkout-form" hidden>
+      <div class="checkout-heading">
+        <button class="back-link" id="back-to-cart" type="button">
+          ← Kembali ke keranjang
+        </button>
+
+        <h3>Informasi pengiriman</h3>
+      </div>
+
+      <label>
+        Nama lengkap
+        <input
+          id="customer-name"
+          name="name"
+          type="text"
+          required
+          autocomplete="name"
+          placeholder="Nama penerima"
+        >
+      </label>
+
+      <label>
+        Nomor telepon
+        <input
+          id="customer-phone"
+          name="phone"
+          type="tel"
+          required
+          autocomplete="tel"
+          placeholder="08xxxxxxxxxx"
+        >
+      </label>
+
+      <label>
+        Alamat lengkap
+        <textarea
+          id="customer-address"
+          name="address"
+          required
+          rows="3"
+          placeholder="Jalan, nomor rumah, kecamatan, kota"
+        ></textarea>
+      </label>
+
+      <label>
+        Metode pembayaran
+        <select id="payment-method" required>
+          <option value="">Pilih metode pembayaran</option>
+          <option value="Transfer Bank">Transfer Bank</option>
+          <option value="E-Wallet">E-Wallet</option>
+          <option value="QRIS">QRIS</option>
+          <option value="COD">COD (Bayar di Tempat)</option>
+        </select>
+      </label>
+
+      <p class="payment-note" id="payment-note">
+        Pilih metode pembayaran untuk melihat keterangannya.
+      </p>
+
+      <div class="checkout-total">
+        <span>Total pembayaran</span>
+        <strong id="checkout-total">Rp0</strong>
+      </div>
+
+      <button class="button button-primary" type="submit">
+        Buat Pesanan
+      </button>
+
+      <p class="checkout-disclaimer">
+        Ini adalah simulasi checkout untuk proyek website. Tidak ada transaksi
+        atau pembayaran nyata yang diproses.
+      </p>
+    </form>
+
+    <!-- BAGIAN SUKSES LAMA DIPERTAHANKAN AGAR ID SCRIPT TIDAK HILANG -->
+    <div class="order-success" id="order-success" hidden>
+      <span class="success-mark">✓</span>
+      <h3>Pesanan berhasil dibuat!</h3>
+
+      <p id="order-success-text">
+        Terima kasih sudah berbelanja di Temu Kata.
+      </p>
+
+      <button class="button button-sage" id="success-close" type="button">
+        Selesai
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- DRAWER RIWAYAT PESANAN -->
+  <div class="drawer-overlay" id="history-overlay" hidden></div>
+
+  <aside
+    class="side-drawer history-drawer"
+    id="history-drawer"
+    aria-labelledby="history-title"
+    aria-modal="true"
+    role="dialog"
+    hidden
+  >
+    <div class="drawer-header">
+      <div>
+        <p class="eyebrow">JEJAK CERITAMU</p>
+        <h2 id="history-title">Riwayat Pesanan</h2>
+      </div>
+
+      <button
+        class="drawer-close"
+        id="close-history"
+        type="button"
+        aria-label="Tutup riwayat"
+      >×</button>
+    </div>
+
+    <div class="history-content" id="history-content"></div>
+
+    <div class="history-empty" id="history-empty">
+      <span class="empty-icon">◷</span>
+      <h3>Belum ada pesanan.</h3>
+      <p>Pesanan yang kamu buat akan tercatat di sini.</p>
+    </div>
+  </aside>
+
+  <!-- POP-UP PEMBAYARAN BERHASIL: TERPISAH DARI DRAWER KERANJANG -->
+  <div
+    class="payment-success-overlay"
+    id="payment-success-overlay"
+    hidden
+  >
+    <section
+      class="payment-success-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="payment-success-title"
+      aria-describedby="payment-success-text"
+    >
+      <span class="payment-success-icon" aria-hidden="true">✓</span>
+
+      <p class="eyebrow">PEMBAYARAN BERHASIL</p>
+
+      <h2 id="payment-success-title">
+        Pesanan berhasil dibuat!
+      </h2>
+
+      <p id="payment-success-text">
+        Terima kasih sudah berbelanja di Temu Kata.
+      </p>
+
+      <button
+        class="button button-sage"
+        id="payment-success-close"
+        type="button"
+      >
+        Selesai
+      </button>
+    </section>
+  </div>
+
+  <!-- NOTIFIKASI -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
