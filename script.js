@@ -4,33 +4,24 @@
    1. DATA NOVEL TEMU KATA
    ========================================================= */
 
-'use strict';
+/*
+IMPLEMENTASI STRUKTUR DATA PADA WEBSITE TEMU KATA
 
-/* =========================================================
-   1. DATA NOVEL TEMU KATA
-   ========================================================= */
+1. ARRAY
+   Data seluruh novel disimpan dalam array bernama novels.
 
-/* =========================================================
-   IMPLEMENTASI STRUKTUR DATA PADA WEBSITE TEMU KATA
-   =========================================================
+2. STRUCT
+   Setiap novel direpresentasikan sebagai objek JavaScript
+   dengan atribut id, title, author, genre, price, stock,
+   label, cover, book, text, image, dan description.
 
-   1. ARRAY
-      Data seluruh novel disimpan dalam array bernama novels.
-
-   2. STRUCT
-      Setiap novel direpresentasikan sebagai objek JavaScript
-      dengan atribut id, title, author, genre, price, stock,
-      label, cover, book, text, image, dan description.
-      Objek ini berfungsi sebagai record terstruktur.
-      JavaScript tidak memiliki keyword struct seperti C/C++.
-
-   3. POINTER
-      JavaScript tidak menyediakan pointer mentah seperti C/C++.
-      Sebagai simulasi konsep pointer/reference, program
-      menggunakan indeks untuk mengakses elemen array.
-      Fungsi getNovelByReference() digunakan untuk mengakses
-      data novel berdasarkan indeksnya.
-    ========================================================= */
+3. POINTER
+   JavaScript tidak menyediakan pointer mentah seperti C/C++.
+   Sebagai simulasi konsep pointer/reference, program
+   menggunakan indeks untuk mengakses elemen array.
+   Fungsi getNovelByReference() digunakan untuk mengakses
+   data novel berdasarkan indeksnya.
+*/
 
 const novels = [
     {
@@ -371,7 +362,6 @@ const novels = [
     }
 ];
 
-
 /* =========================================================
    2. KONFIGURASI DAN PENYIMPANAN
    ========================================================= */
@@ -401,7 +391,6 @@ const $ = (selector, root = document) =>
 const $$ = (selector, root = document) =>
     Array.from(root.querySelectorAll(selector));
 
-
 function loadJSON(key, fallback) {
     try {
         const stored = localStorage.getItem(key);
@@ -420,7 +409,6 @@ function loadJSON(key, fallback) {
     }
 }
 
-
 function saveJSON(key, value) {
     try {
         localStorage.setItem(key, JSON.stringify(value));
@@ -430,6 +418,69 @@ function saveJSON(key, value) {
     }
 }
 
+/* =========================================================
+   2A. SISTEM LOG AKTIVITAS TERSEMBUNYI
+   ========================================================= */
+
+/*
+Aktivitas pengunjung disimpan di localStorage.
+
+Log tidak ditampilkan pada halaman website.
+Pemilik website dapat melihatnya melalui Console browser.
+
+Perintah untuk melihat log:
+console.table(temuKataLogs.getAll())
+
+Data yang dicatat tidak mencakup nomor telepon,
+alamat, atau informasi pribadi pelanggan.
+*/
+
+function addActivity(action, details = '') {
+    const entry = {
+        id: Date.now(),
+        action,
+        details,
+        timestamp: new Date().toISOString()
+    };
+
+    activityLog.unshift(entry);
+
+    // Simpan maksimal 200 aktivitas terbaru.
+    activityLog = activityLog.slice(0, 200);
+
+    try {
+        localStorage.setItem(
+            ACTIVITY_KEY,
+            JSON.stringify(activityLog)
+        );
+    } catch (error) {
+        console.error('Gagal menyimpan log aktivitas:', error);
+    }
+
+    // Log juga dapat dipantau secara langsung melalui Console.
+    console.info('[Temu Kata Activity]', entry);
+}
+
+/*
+Menyediakan akses khusus untuk melihat dan mengelola log
+melalui Developer Tools Console.
+*/
+
+window.temuKataLogs = {
+    getAll() {
+        return loadJSON(ACTIVITY_KEY, []);
+    },
+
+    getLatest() {
+        return loadJSON(ACTIVITY_KEY, [])[0] || null;
+    },
+
+    clear() {
+        localStorage.removeItem(ACTIVITY_KEY);
+        activityLog = [];
+        console.info('Log aktivitas Temu Kata berhasil dihapus.');
+    }
+};
 
 function escapeHTML(value) {
     return String(value).replace(/[&<>"']/g, character => ({
@@ -441,7 +492,6 @@ function escapeHTML(value) {
     })[character]);
 }
 
-
 function rupiah(value) {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -450,11 +500,9 @@ function rupiah(value) {
     }).format(value).replace(/\u00a0/g, ' ');
 }
 
-
 function getNovel(id) {
     return novels.find(novel => novel.id === Number(id));
 }
-
 
 function showToast(message) {
     const toast = $('#toast');
@@ -474,80 +522,10 @@ function showToast(message) {
     }, 2700);
 }
 
-
 /* =========================================================
-   3. LOG AKTIVITAS
+   3. SIMULASI POINTER / REFERENCE
    ========================================================= */
 
-function addActivity(type, message) {
-    activityLog.unshift({
-        id: Date.now() + Math.random(),
-        type,
-        message,
-        time: new Date().toISOString()
-    });
-
-    activityLog = activityLog.slice(0, 60);
-
-    saveJSON(ACTIVITY_KEY, activityLog);
-
-    renderActivityLog();
-}
-
-
-function renderActivityLog() {
-    const list = $('#activity-list');
-    const count = $('#activity-count');
-
-    if (!list || !count) {
-        return;
-    }
-
-    count.textContent = `${activityLog.length} aktivitas`;
-
-    if (activityLog.length === 0) {
-        list.innerHTML = `
-            <p class="activity-empty">
-                Aktivitas pencarian dan pengurutan akan tampil di sini.
-            </p>
-        `;
-
-        return;
-    }
-
-    list.innerHTML = activityLog.map(item => {
-        const date = new Date(item.time);
-
-        const time = Number.isNaN(date.getTime())
-            ? ''
-            : date.toLocaleString('id-ID', {
-                dateStyle: 'medium',
-                timeStyle: 'short'
-            });
-
-        return `
-            <div class="activity-item">
-                <span class="activity-dot" aria-hidden="true"></span>
-
-                <div>
-                    <p>${escapeHTML(item.message)}</p>
-                    <time>${escapeHTML(time)}</time>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-
-/* =========================================================
-   SIMULASI POINTER / REFERENCE
-   ========================================================= */
-
-/*
- * Mengakses data novel berdasarkan indeks array.
- * Ini merupakan simulasi konsep pointer/reference,
- * bukan pointer mentah seperti pada bahasa C/C++.
- */
 function getNovelByReference(index, source = novels) {
     if (
         !Array.isArray(source) ||
@@ -560,33 +538,19 @@ function getNovelByReference(index, source = novels) {
     return source[index];
 }
 
-
 /* =========================================================
    4. LINEAR SEARCH
    ========================================================= */
 
-/*
- * Mencari novel berdasarkan judul atau nama penulis.
- *
- * Parameter:
- * query : kata yang dicari
- * source: array novel yang diperiksa
- * trace : tempat menyimpan langkah pencarian
- */
-function linearSearchBooks(query, source, trace = null) {
+function linearSearchBooks(query, source) {
     const normalized = query.trim().toLocaleLowerCase('id-ID');
     const matches = [];
 
     if (!normalized) {
-        if (trace) {
-            trace.push('Kata pencarian kosong.');
-        }
-
         return matches;
     }
 
     for (let i = 0; i < source.length; i++) {
-        // Mengakses elemen array menggunakan indeks.
         const novel = getNovelByReference(i, source);
 
         if (!novel) {
@@ -600,60 +564,20 @@ function linearSearchBooks(query, source, trace = null) {
             title.includes(normalized) ||
             author.includes(normalized);
 
-        if (trace) {
-            trace.push(
-                `Indeks ${i}: "${novel.title}" — ` +
-                (found ? 'COCOK' : 'tidak cocok')
-            );
-        }
-
         if (found) {
             matches.push(novel);
         }
     }
 
-    if (trace) {
-        trace.push(
-            `Pencarian selesai. Ditemukan ${matches.length} novel.`
-        );
-    }
-
     return matches;
 }
-
 
 /* =========================================================
    5. BUBBLE SORT
    ========================================================= */
 
-/*
- * Mengurutkan novel dengan algoritma Bubble Sort.
- *
- * Parameter:
- * source  : array novel yang akan diurutkan
- * sortType: jenis pengurutan
- * trace   : tempat menyimpan langkah pengurutan
- */
-function bubbleSortBooks(source, sortType, trace = null) {
-    // Salin array supaya data asli tidak berubah.
+function bubbleSortBooks(source, sortType) {
     const sorted = source.slice();
-
-    let comparisonCount = 0;
-    let swapCount = 0;
-    let traceCount = 0;
-
-    const maxTrace = 15;
-
-    function recordTrace(message) {
-        if (!trace) {
-            return;
-        }
-
-        if (traceCount < maxTrace) {
-            trace.push(message);
-            traceCount++;
-        }
-    }
 
     function compare(a, b) {
         switch (sortType) {
@@ -688,57 +612,25 @@ function bubbleSortBooks(source, sortType, trace = null) {
         let swapped = false;
 
         for (let j = 0; j < sorted.length - i - 1; j++) {
-            // Mengakses dua elemen array yang bersebelahan.
             const first = getNovelByReference(j, sorted);
             const second = getNovelByReference(j + 1, sorted);
 
-            comparisonCount++;
-
-            const comparisonResult = compare(first, second);
-
-            recordTrace(
-                `Perbandingan ${comparisonCount}: ` +
-                `"${first.title}" dengan "${second.title}".`
-            );
-
-            if (comparisonResult > 0) {
-                // Simpan sementara sebelum menukar posisi.
+            if (compare(first, second) > 0) {
                 const temporary = sorted[j];
-
                 sorted[j] = sorted[j + 1];
                 sorted[j + 1] = temporary;
 
                 swapped = true;
-                swapCount++;
-
-                recordTrace(
-                    `Pertukaran ${swapCount}: ` +
-                    `"${first.title}" dan "${second.title}".`
-                );
             }
         }
 
-        // Jika tidak ada pertukaran, array sudah terurut.
         if (!swapped) {
             break;
         }
     }
 
-    if (trace) {
-        if (traceCount >= maxTrace) {
-            trace.push(
-                'Sebagian langkah tidak ditampilkan agar log tidak terlalu panjang.'
-            );
-        }
-
-        trace.push(`Total perbandingan: ${comparisonCount}.`);
-        trace.push(`Total pertukaran: ${swapCount}.`);
-        trace.push('Bubble Sort selesai.');
-    }
-
     return sorted;
 }
-
 
 /* =========================================================
    6. TAMPILAN KARTU NOVEL
@@ -754,15 +646,10 @@ function coverMarkup(novel) {
                 --book-text: ${novel.text};
             "
         >
-            ${
-                novel.label
-                    ? `
-                        <span class="product-label">
-                            ${escapeHTML(novel.label)}
-                        </span>
-                    `
-                    : ''
-            }
+            ${novel.label
+            ? `<span class="product-label">${escapeHTML(novel.label)}</span>`
+            : ''
+        }
 
             <img
                 src="${escapeHTML(novel.image)}"
@@ -774,7 +661,6 @@ function coverMarkup(novel) {
         </div>
     `;
 }
-
 
 function productCardMarkup(novel) {
     const cartItem = cart.find(item => item.id === novel.id);
@@ -793,11 +679,9 @@ function productCardMarkup(novel) {
 
     return `
         <article class="product-card" data-novel-id="${novel.id}">
-
             ${coverMarkup(novel)}
 
             <div class="product-content">
-
                 <p class="product-genre">
                     ${escapeHTML(novel.genre)}
                 </p>
@@ -815,7 +699,6 @@ function productCardMarkup(novel) {
                 </p>
 
                 <div class="product-meta">
-
                     <strong class="product-price">
                         ${rupiah(novel.price)}
                     </strong>
@@ -823,7 +706,6 @@ function productCardMarkup(novel) {
                     <span class="product-stock ${novel.stock <= 5 ? 'low' : ''}">
                         Stok: ${novel.stock}
                     </span>
-
                 </div>
 
                 <button
@@ -834,13 +716,10 @@ function productCardMarkup(novel) {
                 >
                     ${buttonText}
                 </button>
-
             </div>
-
         </article>
     `;
 }
-
 
 /* =========================================================
    7. FILTER DAN TAMPILAN KUMPULAN NOVEL
@@ -863,7 +742,6 @@ function currentFilteredNovels() {
 
     return bubbleSortBooks(result, sort);
 }
-
 
 function renderProducts() {
     const grid = $('#product-grid');
@@ -890,7 +768,6 @@ function renderProducts() {
     }
 }
 
-
 function renderGenrePage() {
     const grid = $('#genre-product-grid');
 
@@ -904,7 +781,6 @@ function renderGenrePage() {
     );
 
     const sort = $('#genre-sort-select')?.value || 'featured';
-
     const result = bubbleSortBooks(genreBooks, sort);
 
     grid.innerHTML = result
@@ -973,7 +849,6 @@ function renderGenrePage() {
     }
 }
 
-
 function updateFilterPills() {
     $$('.genre-pill').forEach(button => {
         button.classList.toggle(
@@ -983,14 +858,17 @@ function updateFilterPills() {
     });
 }
 
-
 function setActiveFilter(filter) {
     activeFilter = filter;
+
+    addActivity(
+        'Memilih genre',
+        `Genre yang dipilih: ${filter}`
+    );
 
     updateFilterPills();
     renderProducts();
 }
-
 
 /* =========================================================
    8. KERANJANG BELANJA
@@ -998,10 +876,8 @@ function setActiveFilter(filter) {
 
 function saveCart() {
     saveJSON(CART_KEY, cart);
-
     renderCartBadge();
 }
-
 
 function renderCartBadge() {
     const badge = $('#cart-badge');
@@ -1017,7 +893,6 @@ function renderCartBadge() {
 
     badge.textContent = totalQuantity;
 }
-
 
 function addToCart(id) {
     const novel = getNovel(id);
@@ -1040,7 +915,6 @@ function addToCart(id) {
             showToast(
                 'Jumlah di keranjang sudah mencapai batas stok.'
             );
-
             return;
         }
 
@@ -1052,15 +926,22 @@ function addToCart(id) {
         });
     }
 
-    saveCart();
+    const updatedItem = cart.find(
+        item => item.id === novel.id
+    );
 
+    addActivity(
+        'Menambahkan novel ke keranjang',
+        `${novel.title} | Jumlah di keranjang: ${updatedItem.quantity}`
+    );
+
+    saveCart();
     renderProducts();
     renderGenrePage();
     renderCart();
 
     showToast(`${novel.title} ditambahkan ke keranjang.`);
 }
-
 
 function cartSubtotal() {
     return cart.reduce((sum, item) => {
@@ -1074,7 +955,6 @@ function cartSubtotal() {
     }, 0);
 }
 
-
 function shippingCost(subtotal = cartSubtotal()) {
     if (!subtotal || subtotal >= FREE_SHIPPING_LIMIT) {
         return 0;
@@ -1084,7 +964,6 @@ function shippingCost(subtotal = cartSubtotal()) {
 
     return region === 'luar-jawa' ? 25000 : 15000;
 }
-
 
 function discountAmount(subtotal = cartSubtotal()) {
     if (!couponApplied) {
@@ -1097,7 +976,6 @@ function discountAmount(subtotal = cartSubtotal()) {
     );
 }
 
-
 function cartTotal() {
     const subtotal = cartSubtotal();
     const shipping = shippingCost(subtotal);
@@ -1108,7 +986,6 @@ function cartTotal() {
         subtotal + shipping - discount
     );
 }
-
 
 function renderCart() {
     const itemsContainer = $('#cart-items');
@@ -1137,6 +1014,7 @@ function renderCart() {
         .filter(item => item.quantity > 0);
 
     saveJSON(CART_KEY, cart);
+
     renderCartBadge();
 
     itemsContainer.innerHTML = cart.map(item => {
@@ -1144,7 +1022,6 @@ function renderCart() {
 
         return `
             <article class="cart-item">
-
                 <div
                     class="cart-thumb"
                     style="
@@ -1159,9 +1036,7 @@ function renderCart() {
                 </div>
 
                 <div class="cart-item-info">
-
                     <h4>${escapeHTML(novel.title)}</h4>
-
                     <p>${escapeHTML(novel.author)}</p>
 
                     <div class="cart-item-price">
@@ -1169,7 +1044,6 @@ function renderCart() {
                     </div>
 
                     <div class="quantity-control">
-
                         <button
                             type="button"
                             data-quantity="minus"
@@ -1191,13 +1065,10 @@ function renderCart() {
                         >
                             ＋
                         </button>
-
                     </div>
-
                 </div>
 
                 <div class="cart-item-end">
-
                     <strong class="cart-item-price">
                         ${rupiah(novel.price * item.quantity)}
                     </strong>
@@ -1209,9 +1080,7 @@ function renderCart() {
                     >
                         Hapus
                     </button>
-
                 </div>
-
             </article>
         `;
     }).join('');
@@ -1264,7 +1133,6 @@ function renderCart() {
     }
 }
 
-
 function updateQuantity(id, direction) {
     const numericId = Number(id);
 
@@ -1283,7 +1151,6 @@ function updateQuantity(id, direction) {
             showToast(
                 'Jumlah tidak bisa melebihi stok yang tersedia.'
             );
-
             return;
         }
 
@@ -1298,13 +1165,22 @@ function updateQuantity(id, direction) {
         }
     }
 
-    saveCart();
+    const updatedItem = cart.find(
+        entry => entry.id === numericId
+    );
 
+    addActivity(
+        'Mengubah jumlah keranjang',
+        updatedItem
+            ? `${novel.title} | Jumlah sekarang: ${updatedItem.quantity}`
+            : `${novel.title} | Jumlah menjadi 0 dan dihapus dari keranjang`
+    );
+
+    saveCart();
     renderCart();
     renderProducts();
     renderGenrePage();
 }
-
 
 function removeFromCart(id) {
     const numericId = Number(id);
@@ -1314,8 +1190,12 @@ function removeFromCart(id) {
         item => item.id !== numericId
     );
 
-    saveCart();
+    addActivity(
+        'Menghapus novel dari keranjang',
+        novel ? novel.title : `ID novel: ${numericId}`
+    );
 
+    saveCart();
     renderCart();
     renderProducts();
     renderGenrePage();
@@ -1324,7 +1204,6 @@ function removeFromCart(id) {
         `${novel ? novel.title : 'Novel'} dihapus dari keranjang.`
     );
 }
-
 
 /* =========================================================
    9. KUPON DISKON
@@ -1344,28 +1223,38 @@ function applyCoupon() {
 
     if (!cart.length) {
         couponApplied = false;
-
         message.textContent =
             'Tambahkan novel terlebih dahulu.';
-
         message.classList.add('error');
+
+        addActivity(
+            'Gagal menggunakan kupon',
+            'Keranjang masih kosong.'
+        );
     } else if (code === COUPON_CODE) {
         couponApplied = true;
-
         message.textContent =
             'Kupon berhasil digunakan. Diskon 10%, maksimal Rp25.000.';
+
+        addActivity(
+            'Menggunakan kupon',
+            'Kupon TEMUKATA10 berhasil digunakan.'
+        );
     } else {
         couponApplied = false;
-
         message.textContent =
             'Kode kupon tidak valid.';
-
         message.classList.add('error');
+
+        // Kode kupon yang dimasukkan tidak disimpan ke log.
+        addActivity(
+            'Gagal menggunakan kupon',
+            'Kode kupon yang dimasukkan tidak valid.'
+        );
     }
 
     renderCart();
 }
-
 
 /* =========================================================
    10. DRAWER KERANJANG DAN RIWAYAT
@@ -1399,15 +1288,12 @@ function showDrawer(which) {
         }
 
         renderCart();
-
         $('#close-cart')?.focus();
     } else {
         renderHistory();
-
         $('#close-history')?.focus();
     }
 }
-
 
 function closeAllDrawers(restoreFocus = true) {
     [
@@ -1435,7 +1321,6 @@ function closeAllDrawers(restoreFocus = true) {
     }
 }
 
-
 /* =========================================================
    11. CHECKOUT DAN METODE PEMBAYARAN
    ========================================================= */
@@ -1445,6 +1330,11 @@ function openCheckout() {
         showToast('Keranjang masih kosong.');
         return;
     }
+
+    addActivity(
+        'Membuka halaman checkout',
+        `Jumlah jenis novel: ${cart.length} | Total sementara: ${rupiah(cartTotal())}`
+    );
 
     $('#cart-items').hidden = true;
     $('#cart-empty').hidden = true;
@@ -1457,7 +1347,6 @@ function openCheckout() {
 
     $('#customer-name')?.focus();
 }
-
 
 function updatePaymentNote() {
     const method = $('#payment-method')?.value || '';
@@ -1485,7 +1374,6 @@ function updatePaymentNote() {
         'Pilih metode pembayaran untuk melihat keterangannya.';
 }
 
-
 /* Membuka modal keberhasilan pembayaran */
 
 function showPaymentSuccess(order, customerName) {
@@ -1494,15 +1382,13 @@ function showPaymentSuccess(order, customerName) {
 
     if (!overlay || !message) {
         showToast('Pesanan berhasil dibuat.');
-
         closeAllDrawers();
-
         return;
     }
 
     message.textContent =
-        `Terima kasih, ${customerName}. ` +
-        `Pesanan ${order.id} berhasil dicatat. ` +
+        `Terima kasih, ${customerName}.` +
+        ` Pesanan ${order.id} berhasil dicatat. ` +
         `Total simulasi: ${rupiah(order.total)}.`;
 
     overlay.hidden = false;
@@ -1511,7 +1397,6 @@ function showPaymentSuccess(order, customerName) {
 
     $('#payment-success-close')?.focus();
 }
-
 
 /* Menutup modal keberhasilan pembayaran */
 
@@ -1535,7 +1420,6 @@ function closePaymentSuccess() {
     }
 }
 
-
 function submitOrder(event) {
     event.preventDefault();
 
@@ -1553,7 +1437,6 @@ function submitOrder(event) {
             );
 
             renderCart();
-
             return;
         }
     }
@@ -1575,7 +1458,6 @@ function submitOrder(event) {
 
     const order = {
         id: `TK-${Date.now().toString().slice(-8)}`,
-
         createdAt: new Date().toISOString(),
 
         customer: {
@@ -1605,15 +1487,24 @@ function submitOrder(event) {
         shipping,
         discount,
         total,
-
         status: 'Pesanan dibuat'
     };
 
     /* Simpan riwayat pesanan */
 
     orderHistory.unshift(order);
-
     saveJSON(HISTORY_KEY, orderHistory);
+
+    /* Catat aktivitas checkout tanpa data pribadi pelanggan */
+
+    const orderSummary = order.items
+        .map(item => `${item.title} x${item.quantity}`)
+        .join(', ');
+
+    addActivity(
+        'Menyelesaikan checkout',
+        `Pesanan: ${order.id} | Produk: ${orderSummary} | Pembayaran: ${payment} | Total: ${rupiah(total)}`
+    );
 
     /* Kurangi stok novel */
 
@@ -1639,20 +1530,11 @@ function submitOrder(event) {
     renderProducts();
     renderGenrePage();
 
-    /* Catat aktivitas */
-
-    addActivity(
-        'order',
-        `Pesanan ${order.id} dibuat dengan metode pembayaran ${payment}.`
-    );
-
     /* Tampilkan modal keberhasilan */
 
     showPaymentSuccess(order, name);
-
     showToast('Pesanan berhasil dibuat.');
 }
-
 
 /* =========================================================
    12. RIWAYAT PESANAN
@@ -1690,9 +1572,7 @@ function renderHistory() {
                 class="history-order"
                 data-order-id="${escapeHTML(order.id)}"
             >
-
                 <div class="history-order-header">
-
                     <div>
                         <h3>${escapeHTML(order.id)}</h3>
                         <time>${escapeHTML(formattedDate)}</time>
@@ -1701,27 +1581,19 @@ function renderHistory() {
                     <span class="order-status">
                         ${escapeHTML(order.status || 'Pesanan dibuat')}
                     </span>
-
                 </div>
 
                 <div class="history-order-items">
-
                     ${items}
-
                     <br>
-
                     Metode pembayaran:
                     ${escapeHTML(order.payment || '-')}
-
                     <br>
-
                     Penerima:
                     ${escapeHTML(order.customer?.name || '-')}
-
                 </div>
 
                 <div class="history-order-footer">
-
                     <div>
                         <strong>
                             ${rupiah(Number(order.total) || 0)}
@@ -1737,27 +1609,34 @@ function renderHistory() {
                     >
                         Hapus riwayat ini
                     </button>
-
                 </div>
-
             </article>
         `;
     }).join('');
 }
 
-
 function deleteOrder(id) {
+    const deletedOrder = orderHistory.find(
+        order => String(order.id) === String(id)
+    );
+
     orderHistory = orderHistory.filter(
         order => String(order.id) !== String(id)
     );
 
     saveJSON(HISTORY_KEY, orderHistory);
 
+    addActivity(
+        'Menghapus riwayat pesanan',
+        deletedOrder
+            ? `Pesanan ${deletedOrder.id} dihapus.`
+            : `Pesanan ${id} dihapus.`
+    );
+
     renderHistory();
 
     showToast('Riwayat pesanan dihapus.');
 }
-
 
 /* =========================================================
    13. HALAMAN KUMPULAN NOVEL BERDASARKAN GENRE
@@ -1800,6 +1679,11 @@ function initializeGenrePage() {
 
     activeGenrePage = match;
 
+    addActivity(
+        'Membuka halaman genre',
+        `Pengunjung membuka halaman genre ${match}.`
+    );
+
     if ($('#home-view')) {
         $('#home-view').hidden = true;
     }
@@ -1815,13 +1699,11 @@ function initializeGenrePage() {
     return true;
 }
 
-
 /* =========================================================
    14. EVENT LISTENERS
    ========================================================= */
 
 function initializeEvents() {
-
     /* Navigasi seluler */
 
     $('#mobile-menu-button')?.addEventListener(
@@ -1847,7 +1729,6 @@ function initializeEvents() {
         }
     );
 
-
     $$('#nav-links a').forEach(link => {
         link.addEventListener('click', () => {
             $('#nav-links')?.classList.remove('open');
@@ -1858,7 +1739,6 @@ function initializeEvents() {
             );
         });
     });
-
 
     /* Keranjang */
 
@@ -1877,7 +1757,6 @@ function initializeEvents() {
         () => closeAllDrawers()
     );
 
-
     /* Riwayat pesanan */
 
     $('#open-history')?.addEventListener(
@@ -1894,7 +1773,6 @@ function initializeEvents() {
         'click',
         () => closeAllDrawers()
     );
-
 
     /* Kembali menjelajahi koleksi dari keranjang */
 
@@ -1914,7 +1792,6 @@ function initializeEvents() {
         }
     );
 
-
     /* Checkout */
 
     $('#checkout-start')?.addEventListener(
@@ -1926,7 +1803,6 @@ function initializeEvents() {
         'click',
         () => {
             $('#checkout-form').hidden = true;
-
             $('#cart-items').hidden = cart.length === 0;
             $('#cart-empty').hidden = cart.length > 0;
             $('#cart-summary').hidden = cart.length === 0;
@@ -1939,7 +1815,6 @@ function initializeEvents() {
         'submit',
         submitOrder
     );
-
 
     /* Modal pembayaran berhasil */
 
@@ -1957,14 +1832,12 @@ function initializeEvents() {
         }
     );
 
-
     /* Metode pembayaran */
 
     $('#payment-method')?.addEventListener(
         'change',
         updatePaymentNote
     );
-
 
     /* Wilayah pengiriman */
 
@@ -1979,7 +1852,6 @@ function initializeEvents() {
             }
         }
     );
-
 
     /* Kupon */
 
@@ -1998,7 +1870,6 @@ function initializeEvents() {
         }
     );
 
-
     /* Pencarian judul dan penulis */
 
     $('#search-input')?.addEventListener(
@@ -2012,58 +1883,31 @@ function initializeEvents() {
         }
     );
 
-
     const runSearch = () => {
         searchText = $('#search-input')?.value || '';
 
-        const query = searchText.trim();
-        const trace = [];
+        if (searchText.trim()) {
+            const source = activeFilter === 'Semua'
+                ? novels
+                : novels.filter(
+                    novel => novel.genre === activeFilter
+                );
 
-        // Terapkan filter genre terlebih dahulu.
-        let source = novels.slice();
+            const results = linearSearchBooks(searchText, source);
 
-        if (activeFilter !== 'Semua') {
-            source = source.filter(
-                novel => novel.genre === activeFilter
+            addActivity(
+                'Mencari novel',
+                `Kata kunci: "${searchText.trim()}" | Hasil ditemukan: ${results.length}`
             );
         }
 
-        // Jalankan Linear Search dan catat langkahnya.
-        if (query) {
-            const matches = linearSearchBooks(
-                query,
-                source,
-                trace
-            );
-
-            renderProducts();
-
-            const displayedSteps = trace.join(' | ');
-
-            addActivity(
-                'search',
-                `Linear Search: mencari "${query}". ` +
-                `Data diperiksa: ${source.length} novel. ` +
-                `Hasil ditemukan: ${matches.length} novel. ` +
-                `Langkah: ${displayedSteps}`
-            );
-        } else {
-            renderProducts();
-
-            addActivity(
-                'search',
-                'Linear Search: kata pencarian kosong. ' +
-                'Seluruh novel ditampilkan kembali.'
-            );
-        }
+        renderProducts();
     };
-
 
     $('#search-button')?.addEventListener(
         'click',
         runSearch
     );
-
 
     $('#search-input')?.addEventListener(
         'keydown',
@@ -2074,12 +1918,17 @@ function initializeEvents() {
         }
     );
 
-
     $('#clear-search')?.addEventListener(
         'click',
         () => {
-            $('#search-input').value = '';
+            if (searchText.trim()) {
+                addActivity(
+                    'Menghapus pencarian',
+                    `Kata kunci sebelumnya: "${searchText.trim()}"`
+                );
+            }
 
+            $('#search-input').value = '';
             searchText = '';
 
             $('#clear-search').hidden = true;
@@ -2090,87 +1939,33 @@ function initializeEvents() {
         }
     );
 
-
     /* Pengurutan Bubble Sort pada katalog utama */
 
     $('#sort-select')?.addEventListener(
         'change',
         () => {
-            const sortType = $('#sort-select')?.value || 'featured';
-
-            const selectedText =
-                $('#sort-select')?.selectedOptions[0]?.textContent ||
-                sortType;
-
-            // Siapkan data sesuai filter genre.
-            let source = novels.slice();
-
-            if (activeFilter !== 'Semua') {
-                source = source.filter(
-                    novel => novel.genre === activeFilter
-                );
-            }
-
-            // Jika pencarian aktif, urutkan hasil pencariannya.
-            if (searchText.trim()) {
-                source = linearSearchBooks(searchText, source);
-            }
-
-            const trace = [];
-
-            // Jalankan Bubble Sort sekaligus catat langkahnya.
-            bubbleSortBooks(source, sortType, trace);
-
-            // Perbarui tampilan katalog.
-            renderProducts();
-
             addActivity(
-                'sort',
-                `Bubble Sort: pengurutan berdasarkan "${selectedText}". ` +
-                `Jumlah data: ${source.length}. ` +
-                `Langkah: ${trace.join(' | ')}`
+                'Mengurutkan katalog',
+                `Jenis pengurutan: ${$('#sort-select').value}`
             );
+
+            renderProducts();
         }
     );
-
 
     /* Pengurutan Bubble Sort pada halaman genre */
 
     $('#genre-sort-select')?.addEventListener(
         'change',
         () => {
-            const sortType =
-                $('#genre-sort-select')?.value || 'featured';
-
-            const selectedText =
-                $('#genre-sort-select')?.selectedOptions[0]?.textContent ||
-                sortType;
-
-            // Ambil novel berdasarkan genre yang sedang dibuka.
-            const source = novels.filter(
-                novel =>
-                    novel.genre.toLocaleLowerCase('id-ID') ===
-                    activeGenrePage.toLocaleLowerCase('id-ID')
-            );
-
-            const trace = [];
-
-            // Jalankan Bubble Sort dan catat prosesnya.
-            bubbleSortBooks(source, sortType, trace);
-
-            // Perbarui tampilan halaman genre.
-            renderGenrePage();
-
             addActivity(
-                'sort',
-                `Bubble Sort: pengurutan novel genre "${activeGenrePage}" ` +
-                `berdasarkan "${selectedText}". ` +
-                `Jumlah data: ${source.length}. ` +
-                `Langkah: ${trace.join(' | ')}`
+                'Mengurutkan novel berdasarkan genre',
+                `Genre: ${activeGenrePage} | Jenis pengurutan: ${$('#genre-sort-select').value}`
             );
-        }
-    );  
 
+            renderGenrePage();
+        }
+    );
 
     /* Filter genre */
 
@@ -2179,22 +1974,19 @@ function initializeEvents() {
             const selectedGenre = button.dataset.filter;
 
             setActiveFilter(selectedGenre);
-
-            addActivity(
-                'filter',
-                selectedGenre === 'Semua'
-                    ? 'Novel ditampilkan berdasarkan semua genre.'
-                    : `Novel ditampilkan berdasarkan genre: ${selectedGenre}.`
-            );
         });
     });
-
 
     /* Reset filter dan pencarian */
 
     $('#reset-filters')?.addEventListener(
         'click',
         () => {
+            addActivity(
+                'Mereset filter katalog',
+                'Filter genre, pencarian, dan pengurutan dikembalikan ke pengaturan awal.'
+            );
+
             activeFilter = 'Semua';
             searchText = '';
 
@@ -2215,27 +2007,9 @@ function initializeEvents() {
         }
     );
 
-
-    /* Hapus log aktivitas */
-
-    $('#clear-activity')?.addEventListener(
-        'click',
-        () => {
-            activityLog = [];
-
-            saveJSON(ACTIVITY_KEY, activityLog);
-
-            renderActivityLog();
-
-            showToast('Log aktivitas dihapus.');
-        }
-    );
-
-
     /* Event delegation kartu novel dan keranjang */
 
     document.addEventListener('click', event => {
-
         const addButton = event.target.closest(
             '[data-add-cart]'
         );
@@ -2244,7 +2018,6 @@ function initializeEvents() {
             addToCart(addButton.dataset.addCart);
             return;
         }
-
 
         const quantityButton = event.target.closest(
             '[data-quantity]'
@@ -2259,7 +2032,6 @@ function initializeEvents() {
             return;
         }
 
-
         const removeButton = event.target.closest(
             '[data-remove-cart]'
         );
@@ -2272,7 +2044,6 @@ function initializeEvents() {
             return;
         }
 
-
         const deleteButton = event.target.closest(
             '[data-delete-order]'
         );
@@ -2283,7 +2054,6 @@ function initializeEvents() {
             );
         }
     });
-
 
     /* Tombol Escape */
 
@@ -2303,13 +2073,11 @@ function initializeEvents() {
     });
 }
 
-
 /* =========================================================
    15. INISIALISASI WEBSITE
    ========================================================= */
 
 function initialize() {
-
     if ($('#current-year')) {
         $('#current-year').textContent =
             new Date().getFullYear();
@@ -2317,19 +2085,22 @@ function initialize() {
 
     renderCartBadge();
     renderCart();
-    renderActivityLog();
 
     initializeEvents();
 
     const isGenrePage = initializeGenrePage();
 
     if (!isGenrePage) {
+        addActivity(
+            'Membuka halaman utama',
+            'Pengunjung membuka halaman utama Temu Kata.'
+        );
+
         renderProducts();
     }
 
     updatePaymentNote();
 }
-
 
 document.addEventListener(
     'DOMContentLoaded',
